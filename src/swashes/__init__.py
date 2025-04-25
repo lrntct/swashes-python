@@ -4,25 +4,10 @@ import os
 import subprocess
 import sys
 from pathlib import Path
-
+from typing import Iterable, NoReturn
 from importlib.metadata import distribution
 
-# Assuming no _version.py for now, use version from pyproject.toml
-# from ._version import version as __version__
 __version__ = "1.05.00"  # Match pyproject.toml
-
-TYPE_CHECKING = False
-
-if TYPE_CHECKING:
-    from typing import Iterable, NoReturn
-
-# Only export symbols relevant to swashes
-__all__ = ["SWASHES_BIN_DIR", "SWASHES_DATA", "__version__", "main"]
-
-
-def __dir__() -> list[str]:
-    return __all__
-
 
 swashes_executable_path_base = None
 try:
@@ -61,8 +46,7 @@ def _program_exit(name: str, *args: str) -> NoReturn:
     executable_name = f"{name}.exe" if sys.platform.startswith("win") else name
     executable_path = SWASHES_BIN_DIR / executable_name
     try:
-        # os.execl requires string paths
-        os.execl(str(executable_path), str(executable_path), *args)
+        os.execl(executable_path, executable_path, *args)
     except OSError as e:
         # Basic error handling if execl fails
         print(f"Error executing swashes: {e}", file=sys.stderr)
