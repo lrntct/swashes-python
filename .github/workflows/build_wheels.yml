@@ -9,8 +9,8 @@ jobs:
     strategy:
       matrix:
         # macos-13 is an intel runner, macos-14 is apple silicon
-        # os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-13, macos-14]
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-13, macos-14]
+        # os: [ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -18,8 +18,8 @@ jobs:
       - name: Build wheels
         uses: pypa/cibuildwheel@v2.23.2
         env:
-          CIBW_ARCHS: auto64  # Don't build 32 bits wheels
-          CIBW_SKIP: pp*  # Don't build pypy wheels
+          # CIBW_ARCHS: auto64  # Don't build 32 bits wheels
+          # CIBW_SKIP: pp*  # Don't build pypy wheels
           CIBW_TEST_COMMAND: pytest {package}/tests
           CIBW_TEST_REQUIRES: pytest>=8.3.5
       - uses: actions/upload-artifact@v4
