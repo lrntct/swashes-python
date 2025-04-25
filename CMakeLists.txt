@@ -31,47 +31,26 @@ if(NOT swashes_upstream_SOURCE_DIR)
 endif()
 message(STATUS "SWASHES source directory: ${swashes_upstream_SOURCE_DIR}")
 
-# --- Build Upstream SWASHES using Makefile ---
-message(STATUS "Adding custom command to build SWASHES using make")
+# --- Define SWASHES Build Target Directly ---
+message(STATUS "Defining SWASHES executable target from upstream sources")
 
-# Define the path to the expected executable after make runs
-# The upstream Makefile seems to place it in a 'bin' subdirectory
-set(SWASHES_EXECUTABLE ${swashes_upstream_SOURCE_DIR}/bin/swashes)
+# Glob the source files from the downloaded directory
+file(GLOB SWASHES_SOURCES "${swashes_upstream_SOURCE_DIR}/Sources/*.cpp")
 
-# Add a custom command that runs 'make' in the source directory.
-# This command is attached to a custom target to ensure it runs during the build.
-# The OUTPUT specifies the file this command is expected to produce.
-add_custom_command(
-    OUTPUT ${SWASHES_EXECUTABLE} # Updated path
-    # Explicitly use 'make'. Let make find/use its own compilers.
-    COMMAND make
-    WORKING_DIRECTORY ${swashes_upstream_SOURCE_DIR}
-    COMMENT "Building SWASHES executable with make..."
-    VERBATIM # Ensure commands are not escaped
-    DEPENDS ${swashes_upstream_SOURCE_DIR}/Makefile # Re-run if Makefile changes (optional but good practice)
-)
+# Define the executable target using the collected source files
+add_executable(swashes ${SWASHES_SOURCES})
 
-# Add a custom target that depends on the output of the custom command.
-# Building this target triggers the custom command.
-add_custom_target(
-    build_swashes_upstream ALL # Add ALL to build this target by default
-    DEPENDS ${SWASHES_EXECUTABLE}
-    COMMENT "Ensuring SWASHES upstream is built"
-)
+# Specify the include directory for headers
+target_include_directories(swashes PUBLIC ${swashes_upstream_SOURCE_DIR}/Headers)
 
 # --- Install the Built Executable ---
-message(STATUS "Installing SWASHES executable to bin directory")
+message(STATUS "Installing SWASHES executable target to bin directory")
 
-# Install the compiled 'swashes' executable into a 'bin' directory
-# relative to the package installation prefix.
+# Install the 'swashes' target built by CMake.
 install(
-    PROGRAMS ${SWASHES_EXECUTABLE}
-    DESTINATION bin  # Installs to <prefix>/bin
+    TARGETS swashes
+    RUNTIME DESTINATION bin # Install executables to <prefix>/bin
     COMPONENT swashes_runtime # Optional component name
 )
-
-# The dependency is handled by the DEPENDS keyword in add_custom_target.
-# The install command implicitly depends on the file existing.
-# No explicit add_dependencies needed here.
 
 message(STATUS "CMake configuration for SWASHES wrapper finished.")
