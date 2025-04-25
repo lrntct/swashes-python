@@ -1,58 +1,41 @@
-# Upstream source URL (for reference, handled by CMakeLists.txt)
-# https://sourcesup.renater.fr/frs/download.php/file/6718/SWASHES-1.05.00.zip
-
 [build-system]
 requires = [
-    "scikit-build-core>=0.8", # Use a recent version
-    # cmake and ninja are injected by scikit-build-core
+    "scikit-build-core>=0.11",  # PEP 639 compliant
 ]
 build-backend = "scikit_build_core.build"
 
 [project]
 name = "swashes"
 version = "1.05.00"
-description = "A Python wrapper for the SWASHES C++ executable."
+description = "A Python package for the SWASHES executable."
 readme = "README.md"
-requires-python = ">=3.10" # Lowered slightly for broader compatibility, adjust if needed
-license = { text = "Specify your license here, e.g., MIT License" } # Add license info
+requires-python = ">=3.10"
+license = { text = "CECILL-2.0" }
 authors = [
-    { name = "Your Name", email = "your.email@example.com" }, # Add author info
+    { name = "Laurent Courty", email = "lrntct@gmail.com" }
 ]
-classifiers = [ # Add relevant classifiers
-    "Development Status :: 3 - Alpha",
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Science/Research",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: C++",
-    "Operating System :: POSIX :: Linux", # Adjust if needed
+    "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Hydrology",
 ]
-dependencies = [
-    # No runtime Python dependencies needed for just wrapping the executable
-]
+dependencies = []
 
-# Defines the command-line script 'swashes'
 [project.scripts]
 swashes = "swashes:main"
 
-# Optional: Define URLs for PyPI
 [project.urls]
-Homepage = "https://github.com/your-username/swashes-wrapper" # Example URL
-Repository = "https://github.com/your-username/swashes-wrapper" # Example URL
+Homepage = "https://www.idpoisson.fr/swashes/"
+Repository = "https://github.com/lrntct/swashes-python"
 
-# Configuration for scikit-build-core
 [tool.scikit-build]
-# Point to the directory containing your main CMakeLists.txt
 cmake.source-dir = "."
-# Define where CMake installs files relative to the package root
-# This structure (swashes/data) will be used by the Python wrapper to find the executable
 wheel.install-dir = "swashes/data"
 
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",
 ]
-# Optional: Add build-time CMake arguments if needed
-# cmake.args = ["-DSOME_BUILD_OPTION=ON"]
